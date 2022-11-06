@@ -1,7 +1,7 @@
-package constant_pool
+package cp
 
 import (
-	"jvm/src/reader"
+	"jvm/src/util"
 	"strings"
 )
 
@@ -24,6 +24,16 @@ const (
 
 type ConstantPool []ConstantInfo
 
+func NewConstantPool() (pool ConstantPool) {
+	pool = ConstantPool{}
+	pool = append(pool, struct {
+		Tag ConstantType
+		info
+	}{})
+
+	return pool
+}
+
 type Index uint16 // TODO: migrate uint16 -> cp.Index
 
 type ConstantType uint8
@@ -33,7 +43,7 @@ type ConstantInfo struct {
 	info
 }
 
-type ParserFunc func(tag ConstantType, reader *reader.BytesReader) ConstantInfo
+type ParserFunc func(tag ConstantType, reader *util.BytesReader) ConstantInfo
 
 var ParseMap = map[ConstantType]ParserFunc{
 	CONSTANT_Class:              parseClass,
@@ -52,63 +62,63 @@ var ParseMap = map[ConstantType]ParserFunc{
 	CONSTANT_InvokeDynamic:      parseInvokeDynamic,
 }
 
-func parseClass(_ ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseClass(_ ConstantType, reader *util.BytesReader) ConstantInfo {
 	return ConstantInfo{
 		CONSTANT_Class,
 		info{ClassInfo: ClassInfo{NameIndex: reader.ReadUint16()}},
 	}
 }
 
-func parseRef(tag ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseRef(tag ConstantType, reader *util.BytesReader) ConstantInfo {
 	return ConstantInfo{
 		tag,
 		info{RefInfo: RefInfo{ClassIndex: reader.ReadUint16(), NameAndTypeIndex: reader.ReadUint16()}},
 	}
 }
 
-func parseString(_ ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseString(_ ConstantType, reader *util.BytesReader) ConstantInfo {
 	return ConstantInfo{
 		CONSTANT_String,
-		info{StringInfo: StringInfo{StringIndex: reader.ReadUint16()}},
+		info{StringInfo: StringInfo{StringIndex: Index(reader.ReadUint16())}},
 	}
 }
 
-func parseInt(_ ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseInt(_ ConstantType, reader *util.BytesReader) ConstantInfo {
 	return ConstantInfo{
 		CONSTANT_Integer,
 		info{NumericInfo: NumericInfo{Integer: int32(reader.ReadUint32())}},
 	}
 }
 
-func parseFloat(_ ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseFloat(_ ConstantType, reader *util.BytesReader) ConstantInfo {
 	return ConstantInfo{
 		CONSTANT_Float,
 		info{NumericInfo: NumericInfo{Float: reader.ReadFloat()}},
 	}
 }
 
-func parseLong(_ ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseLong(_ ConstantType, reader *util.BytesReader) ConstantInfo {
 	return ConstantInfo{
 		CONSTANT_Long,
 		info{NumericInfo: NumericInfo{Long: int64(reader.ReadUint64())}},
 	}
 }
 
-func parseDouble(_ ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseDouble(_ ConstantType, reader *util.BytesReader) ConstantInfo {
 	return ConstantInfo{
 		CONSTANT_Double,
 		info{NumericInfo: NumericInfo{Double: reader.ReadDouble()}},
 	}
 }
 
-func parseNameAndType(_ ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseNameAndType(_ ConstantType, reader *util.BytesReader) ConstantInfo {
 	return ConstantInfo{
 		CONSTANT_NameAndType,
 		info{NameAndTypeInfo: NameAndTypeInfo{NameIndex: reader.ReadUint16(), DescriptorIndex: reader.ReadUint16()}},
 	}
 }
 
-func parseUtf8(_ ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseUtf8(_ ConstantType, reader *util.BytesReader) ConstantInfo {
 	length := reader.ReadUint16()
 	bytes := reader.ReadBytes(int(length))
 	var builder strings.Builder
@@ -148,7 +158,7 @@ func _processSupplementaryCharacters(u, v, w, x, y, z byte) rune {
 		(rune(y&0x0f) << 6) + rune(z&0x3f)
 }
 
-func parseMethodHandle(_ ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseMethodHandle(_ ConstantType, reader *util.BytesReader) ConstantInfo {
 	refKind := reader.ReadUint8()
 	if 1 < refKind && refKind > 9 {
 		logger.Panicf("Incorrect reference_kind value in CONSTANT_MethodHandle_info")
@@ -159,14 +169,14 @@ func parseMethodHandle(_ ConstantType, reader *reader.BytesReader) ConstantInfo 
 	}
 }
 
-func parseMethodType(_ ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseMethodType(_ ConstantType, reader *util.BytesReader) ConstantInfo {
 	return ConstantInfo{
 		CONSTANT_MethodType,
 		info{MethodTypeInfo: MethodTypeInfo{DescriptorIndex: reader.ReadUint16()}},
 	}
 }
 
-func parseInvokeDynamic(_ ConstantType, reader *reader.BytesReader) ConstantInfo {
+func parseInvokeDynamic(_ ConstantType, reader *util.BytesReader) ConstantInfo {
 	return ConstantInfo{
 		CONSTANT_InvokeDynamic,
 		info{InvokeDynamicInfo: InvokeDynamicInfo{

@@ -1,6 +1,6 @@
 package attributes
 
-import "jvm/src/class_file/constant_pool"
+import "jvm/src/class_file/cp"
 
 type BootstrapMethods struct {
 	commonInfo
@@ -9,7 +9,7 @@ type BootstrapMethods struct {
 }
 
 type BootstrapMethod struct {
-	BootstrapMethodRef    constant_pool.Index
+	BootstrapMethodRef    cp.Index
 	NumBootstrapArguments uint16
-	BootstrapArguments    []constant_pool.Index
+	BootstrapArguments    []cp.Index
 }

@@ -1,4 +1,4 @@
-package constant_pool
+package cp
 
 // embedding - наше всё!
 type info struct {
@@ -21,7 +21,7 @@ type RefInfo struct {
 }
 
 type StringInfo struct {
-	StringIndex uint16
+	StringIndex Index
 }
 
 type NumericInfo struct {

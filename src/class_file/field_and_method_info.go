@@ -1,15 +1,26 @@
 package class_file
 
-import "jvm/src/class_file/attributes"
+import (
+	"jvm/src/class_file/attributes"
+	"jvm/src/class_file/cp"
+	"jvm/src/util"
+)
 
-type commonStructure struct {
+type CommonFieldsAndMethods struct {
 	AccessFlags     AccessFlags
-	NameIndex       uint16
-	DescriptorIndex uint16
+	NameIndex       cp.Index
+	DescriptorIndex cp.Index
 	AttributesCount uint16
-	Attributes      attributes.AttributesInfo
+	Attributes      []attributes.Attribute
 }
 
-type FieldInfo commonStructure
-
-type MethodInfo commonStructure
+func ParseCommonFieldsAndMethodsStructure(clsReader *util.BytesReader) CommonFieldsAndMethods {
+	attributesCount := clsReader.ReadUint16()
+	return CommonFieldsAndMethods{
+		AccessFlags:     AccessFlags(clsReader.ReadUint16()),
+		NameIndex:       cp.Index(clsReader.ReadUint16()),
+		DescriptorIndex: cp.Index(clsReader.ReadUint16()),
+		AttributesCount: attributesCount,
+		Attributes:      attributes.Parse(clsReader, attributesCount),
+	}
+}

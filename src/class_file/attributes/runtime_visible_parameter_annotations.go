@@ -4,13 +4,13 @@ import (
 	"jvm/src/util"
 )
 
-type RuntimeInvisibleParameterAnnotations struct {
+type RuntimeVisibleParameterAnnotations struct {
 	commonInfo
 	NumParameters        uint16
 	ParameterAnnotations []ParameterAnnotation
 }
 
-func (a *RuntimeInvisibleParameterAnnotations) fillSpecificInfo(reader *util.BytesReader) {
+func (a *RuntimeVisibleParameterAnnotations) fillSpecificInfo(reader *util.BytesReader) {
 	a.NumParameters = reader.ReadUint16()
 	a.ParameterAnnotations = make([]ParameterAnnotation, a.NumParameters)
 	for i := range a.ParameterAnnotations {
@@ -21,4 +21,9 @@ func (a *RuntimeInvisibleParameterAnnotations) fillSpecificInfo(reader *util.Byt
 			Annotations:    annotations,
 		}
 	}
+}
+
+type ParameterAnnotation struct {
+	NumAnnotations uint16
+	Annotations    []Annotation
 }
