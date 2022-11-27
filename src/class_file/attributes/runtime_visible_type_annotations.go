@@ -2,7 +2,7 @@ package attributes
 
 import (
 	"jvm/src/class_file/cp"
-	"jvm/src/util"
+	"jvm/src/utils"
 )
 
 type RuntimeVisibleTypeAnnotations struct {
@@ -23,6 +23,6 @@ type TypeAnnotation struct {
 	ElementValuePairs    []ElementValuePair
 }
 
-func (a *RuntimeVisibleTypeAnnotations) fillSpecificInfo(reader *util.BytesReader) {
+func (a *RuntimeVisibleTypeAnnotations) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 
 }

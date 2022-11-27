@@ -1,9 +1,8 @@
 package attributes
 
 import (
-	"jvm/src/class_file"
 	"jvm/src/class_file/cp"
-	"jvm/src/util"
+	"jvm/src/utils"
 )
 
 var nameMap = map[string]func() Attribute{
@@ -33,9 +32,9 @@ var nameMap = map[string]func() Attribute{
 
 type Attribute interface {
 	// GetName returns attribute name that identifies it in JVM
-	GetName() string
+	GetName(constantPool cp.ConstantPool) string
 	// fillSpecificInfo fills in all attribute-specific fields. Doesn't fill in commonInfo
-	fillSpecificInfo(reader *util.BytesReader)
+	fillSpecificInfo(reader *utils.BytesReader, constantPool cp.ConstantPool)
 	//GetValue() any
 	// fillCommonInfo fills in only commonInfo.AttributeNameIndex and commonInfo.AttributeLength
 	fillCommonInfo(nameIndex cp.Index, length uint32)
@@ -46,8 +45,8 @@ type commonInfo struct {
 	AttributeLength    uint32
 }
 
-func (info *commonInfo) GetName() string {
-	cpEntry := class_file.ConstantPool[info.AttributeNameIndex]
+func (info *commonInfo) GetName(constantPool cp.ConstantPool) string {
+	cpEntry := constantPool[info.AttributeNameIndex]
 	if cpEntry.Tag != cp.CONSTANT_Utf8 {
 		logger.Panicf("Incorrect type at CONSTANT POOL index %d. CONSTANT_Utf8_info expected.", info.AttributeNameIndex)
 	}
@@ -59,10 +58,10 @@ func (info *commonInfo) fillCommonInfo(nameIndex cp.Index, length uint32) {
 	info.AttributeLength = length
 }
 
-// readAttribute it returns Attribute with completed name index and length
-func readAttribute(reader *util.BytesReader) (attr Attribute) {
+// readAttribute returns completed Attribute
+func readAttribute(reader *utils.BytesReader, constantPool cp.ConstantPool) (attr Attribute) {
 	index := cp.Index(reader.ReadUint16())
-	cpEntry := class_file.ConstantPool[index]
+	cpEntry := constantPool[index]
 	length := reader.ReadUint32()
 	if cpEntry.Tag != cp.CONSTANT_Utf8 {
 		logger.Panicf("Incorrect type at CONSTANT POOL index %d. CONSTANT_Utf8_info expected.", index)
@@ -71,16 +70,16 @@ func readAttribute(reader *util.BytesReader) (attr Attribute) {
 	if f, ok := nameMap[cpEntry.Utf8Info.Value]; ok {
 		attribute := f()
 		attribute.fillCommonInfo(index, length)
-		attribute.fillSpecificInfo(reader)
+		attribute.fillSpecificInfo(reader, constantPool)
 		return attribute
 	}
 	return nil // TODO: strange situation, panic
 }
 
-func Parse(reader *util.BytesReader, count uint16) []Attribute {
+func Parse(reader *utils.BytesReader, count uint16, constantPool cp.ConstantPool) []Attribute {
 	res := make([]Attribute, count)
 	for i := uint16(0); i < count; i++ {
-		res[i] = readAttribute(reader)
+		res[i] = readAttribute(reader, constantPool)
 	}
 	return res
 }

@@ -2,7 +2,7 @@ package attributes
 
 import (
 	"jvm/src/class_file/cp"
-	"jvm/src/util"
+	"jvm/src/utils"
 )
 
 type Signature struct {
@@ -10,11 +10,6 @@ type Signature struct {
 	SignatureIndex cp.Index
 }
 
-func (s *Signature) fillSpecificInfo(reader *util.BytesReader) {
+func (s *Signature) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 	s.SignatureIndex = cp.Index(reader.ReadUint16())
-}
-
-func (s *Signature) GetValue() any {
-	//TODO implement me
-	panic("implement me")
 }

@@ -2,7 +2,7 @@ package attributes
 
 import (
 	"jvm/src/class_file/cp"
-	"jvm/src/util"
+	"jvm/src/utils"
 )
 
 type EnclosingMethod struct {
@@ -11,12 +11,7 @@ type EnclosingMethod struct {
 	MethodIndex cp.Index
 }
 
-func (em *EnclosingMethod) fillSpecificInfo(reader *util.BytesReader) {
+func (em *EnclosingMethod) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 	em.ClassIndex = cp.Index(reader.ReadUint16())
 	em.MethodIndex = cp.Index(reader.ReadUint16())
-}
-
-func (em *EnclosingMethod) GetValue() any {
-	//TODO implement me
-	panic("implement me")
 }

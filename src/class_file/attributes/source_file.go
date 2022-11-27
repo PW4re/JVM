@@ -2,7 +2,7 @@ package attributes
 
 import (
 	"jvm/src/class_file/cp"
-	"jvm/src/util"
+	"jvm/src/utils"
 )
 
 type SourceFile struct {
@@ -10,11 +10,6 @@ type SourceFile struct {
 	SourceFileIndex cp.Index
 }
 
-func (sf *SourceFile) fillSpecificInfo(reader *util.BytesReader) {
+func (sf *SourceFile) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 	sf.SourceFileIndex = cp.Index(reader.ReadUint16())
-}
-
-func (sf *SourceFile) GetValue() any {
-	//TODO implement me
-	panic("implement me")
 }

@@ -1,7 +1,8 @@
 package attributes
 
 import (
-	"jvm/src/util"
+	"jvm/src/class_file/cp"
+	"jvm/src/utils"
 )
 
 type SourceDebugExtension struct {
@@ -9,12 +10,7 @@ type SourceDebugExtension struct {
 	// TODO: debug extension here
 }
 
-func (sde *SourceDebugExtension) fillSpecificInfo(reader *util.BytesReader) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (sde *SourceDebugExtension) GetValue() any {
+func (sde *SourceDebugExtension) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 	//TODO implement me
 	panic("implement me")
 }

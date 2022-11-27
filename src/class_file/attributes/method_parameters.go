@@ -1,7 +1,7 @@
 package attributes
 
 import (
-	"jvm/src/class_file"
+	"jvm/src/class_file/acc"
 	"jvm/src/class_file/cp"
 )
 
@@ -13,5 +13,5 @@ type MethodParameters struct {
 
 type Parameter struct {
 	NameIndex   cp.Index
-	AccessFlags class_file.AccessFlags
+	AccessFlags acc.AccessFlags
 }

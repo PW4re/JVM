@@ -1,7 +1,8 @@
 package attributes
 
 import (
-	"jvm/src/util"
+	"jvm/src/class_file/cp"
+	"jvm/src/utils"
 )
 
 type LineNumberTable struct {
@@ -10,7 +11,7 @@ type LineNumberTable struct {
 	Table                 []LineNumberTableEntry
 }
 
-func (a *LineNumberTable) fillSpecificInfo(reader *util.BytesReader) {
+func (a *LineNumberTable) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 	a.LineNumberTableLength = reader.ReadUint16()
 	a.Table = make([]LineNumberTableEntry, a.LineNumberTableLength)
 	for i, _ := range a.Table {
@@ -19,11 +20,6 @@ func (a *LineNumberTable) fillSpecificInfo(reader *util.BytesReader) {
 			LineNumber: reader.ReadUint16(),
 		}
 	}
-}
-
-func (a *LineNumberTable) GetValue() any {
-	//TODO implement me
-	panic("implement me")
 }
 
 type LineNumberTableEntry struct {

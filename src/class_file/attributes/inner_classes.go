@@ -1,9 +1,9 @@
 package attributes
 
 import (
-	"jvm/src/class_file"
+	"jvm/src/class_file/acc"
 	"jvm/src/class_file/cp"
-	"jvm/src/util"
+	"jvm/src/utils"
 )
 
 type InnerClasses struct {
@@ -12,7 +12,7 @@ type InnerClasses struct {
 	Classes         []Class
 }
 
-func (ic *InnerClasses) fillSpecificInfo(reader *util.BytesReader) {
+func (ic *InnerClasses) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 	ic.NumberOfClasses = reader.ReadUint16()
 	classes := make([]Class, ic.NumberOfClasses)
 	for i, _ := range classes {
@@ -20,20 +20,15 @@ func (ic *InnerClasses) fillSpecificInfo(reader *util.BytesReader) {
 			InnerClassInfoIndex:   cp.Index(reader.ReadUint16()),
 			OuterClassInfoIndex:   cp.Index(reader.ReadUint16()),
 			InnerNameIndex:        cp.Index(reader.ReadUint16()),
-			InnerClassAccessFlags: class_file.AccessFlags(reader.ReadUint16()),
+			InnerClassAccessFlags: acc.AccessFlags(reader.ReadUint16()),
 		}
 	}
 	ic.Classes = classes
-}
-
-func (ic *InnerClasses) GetValue() any {
-	//TODO implement me
-	panic("implement me")
 }
 
 type Class struct {
 	InnerClassInfoIndex   cp.Index
 	OuterClassInfoIndex   cp.Index
 	InnerNameIndex        cp.Index
-	InnerClassAccessFlags class_file.AccessFlags
+	InnerClassAccessFlags acc.AccessFlags
 }

@@ -2,7 +2,7 @@ package attributes
 
 import (
 	"jvm/src/class_file/cp"
-	"jvm/src/util"
+	"jvm/src/utils"
 )
 
 type Exceptions struct {
@@ -11,15 +11,10 @@ type Exceptions struct {
 	ExceptionIndexTable []cp.Index
 }
 
-func (a *Exceptions) fillSpecificInfo(reader *util.BytesReader) {
+func (a *Exceptions) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 	a.NumberOfExceptions = reader.ReadUint16()
 	a.ExceptionIndexTable = make([]cp.Index, a.NumberOfExceptions)
 	for i, _ := range a.ExceptionIndexTable {
 		a.ExceptionIndexTable[i] = cp.Index(reader.ReadUint16())
 	}
-}
-
-func (a *Exceptions) GetValue() any {
-	//TODO implement me
-	panic("implement me")
 }

@@ -2,7 +2,7 @@ package attributes
 
 import (
 	cp "jvm/src/class_file/cp"
-	"jvm/src/util"
+	"jvm/src/utils"
 )
 
 type RuntimeVisibleAnnotations struct {
@@ -11,7 +11,7 @@ type RuntimeVisibleAnnotations struct {
 	Annotations    []Annotation
 }
 
-func (a *RuntimeVisibleAnnotations) fillSpecificInfo(reader *util.BytesReader) {
+func (a *RuntimeVisibleAnnotations) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 	a.NumAnnotations = reader.ReadUint16()
 	a.Annotations = make([]Annotation, a.NumAnnotations)
 	for i := range a.Annotations {
@@ -68,7 +68,7 @@ var possibleElementTags = []byte{
 	'[', // Array type 	        array_value			Not applicable
 }
 
-func parseAnnotation(reader *util.BytesReader) (ann Annotation) {
+func parseAnnotation(reader *utils.BytesReader) (ann Annotation) {
 	ann.TypeIndex = cp.Index(reader.ReadUint16())
 	ann.NumElementValuePairs = reader.ReadUint16()
 	ann.ElementValuePairs = make([]ElementValuePair, ann.NumElementValuePairs)

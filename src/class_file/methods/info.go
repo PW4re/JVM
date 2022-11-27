@@ -1,16 +1,17 @@
 package methods
 
 import (
-	"jvm/src/class_file"
-	"jvm/src/util"
+	"jvm/src/class_file/attributes"
+	"jvm/src/class_file/cp"
+	"jvm/src/utils"
 )
 
-type Info class_file.CommonFieldsAndMethods
+type Info attributes.CommonFieldsAndMethods
 
-func Parse(clsReader *util.BytesReader, count uint16) []Info {
+func Parse(clsReader *utils.BytesReader, count uint16, pool cp.ConstantPool) []Info {
 	res := make([]Info, count)
 	for i := range res {
-		res[i] = Info(class_file.ParseCommonFieldsAndMethodsStructure(clsReader))
+		res[i] = Info(attributes.ParseCommonFieldsAndMethodsStructure(clsReader, pool))
 	}
 	return res
 }

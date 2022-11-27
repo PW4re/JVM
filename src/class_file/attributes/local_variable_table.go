@@ -2,7 +2,7 @@ package attributes
 
 import (
 	"jvm/src/class_file/cp"
-	"jvm/src/util"
+	"jvm/src/utils"
 )
 
 type LocalVariableTable struct {
@@ -11,7 +11,7 @@ type LocalVariableTable struct {
 	Table                    []LocalVariableTableEntry
 }
 
-func (a *LocalVariableTable) fillSpecificInfo(reader *util.BytesReader) {
+func (a *LocalVariableTable) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 	a.LocalVariableTableLength = reader.ReadUint16()
 	a.Table = make([]LocalVariableTableEntry, a.LocalVariableTableLength)
 	for i := range a.Table {

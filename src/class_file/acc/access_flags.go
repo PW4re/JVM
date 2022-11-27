@@ -1,4 +1,4 @@
-package class_file
+package acc
 
 type AccessFlags uint16
 

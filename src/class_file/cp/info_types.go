@@ -1,6 +1,5 @@
 package cp
 
-// embedding - наше всё!
 type info struct {
 	ClassInfo
 	RefInfo

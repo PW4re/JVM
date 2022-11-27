@@ -2,7 +2,7 @@ package attributes
 
 import (
 	"jvm/src/class_file/cp"
-	"jvm/src/util"
+	"jvm/src/utils"
 )
 
 type Code struct {
@@ -17,7 +17,7 @@ type Code struct {
 	Attributes           []Attribute
 }
 
-func (c *Code) fillSpecificInfo(reader *util.BytesReader) {
+func (c *Code) fillSpecificInfo(reader *utils.BytesReader, constantPool cp.ConstantPool) {
 	c.MaxStack = reader.ReadUint16()
 	c.MaxLocals = reader.ReadUint16()
 	codeLen := reader.ReadUint32()
@@ -29,12 +29,7 @@ func (c *Code) fillSpecificInfo(reader *util.BytesReader) {
 	c.ExceptionTableLength = reader.ReadUint16()
 	c.ExceptionTable = parseExceptionTable(reader, c.ExceptionTableLength)
 	c.AttributesCount = reader.ReadUint16()
-	c.Attributes = Parse(reader, c.AttributesCount)
-}
-
-func (c *Code) GetValue() any {
-	//TODO implement me
-	panic("implement me")
+	c.Attributes = Parse(reader, c.AttributesCount, constantPool)
 }
 
 type ExceptionTable []ExceptionTableEntry
@@ -49,7 +44,7 @@ type ExceptionTableEntry struct {
 	CatchType cp.Index
 }
 
-func parseExceptionTable(reader *util.BytesReader, length uint16) ExceptionTable {
+func parseExceptionTable(reader *utils.BytesReader, length uint16) ExceptionTable {
 	var table ExceptionTable = make([]ExceptionTableEntry, length)
 	for i := uint16(0); i < length; i++ {
 		startPc := reader.ReadUint16()

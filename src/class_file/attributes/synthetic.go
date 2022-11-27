@@ -1,15 +1,13 @@
 package attributes
 
-import "jvm/src/util"
+import (
+	"jvm/src/class_file/cp"
+	"jvm/src/utils"
+)
 
 type Synthetic struct {
 	commonInfo
 }
 
-func (s *Synthetic) fillSpecificInfo(reader *util.BytesReader) {
-}
-
-func (s *Synthetic) GetValue() any {
-	//TODO implement me
-	panic("implement me")
+func (s *Synthetic) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 }

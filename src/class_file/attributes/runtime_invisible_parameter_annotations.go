@@ -1,7 +1,8 @@
 package attributes
 
 import (
-	"jvm/src/util"
+	"jvm/src/class_file/cp"
+	"jvm/src/utils"
 )
 
 type RuntimeInvisibleParameterAnnotations struct {
@@ -10,7 +11,7 @@ type RuntimeInvisibleParameterAnnotations struct {
 	ParameterAnnotations []ParameterAnnotation
 }
 
-func (a *RuntimeInvisibleParameterAnnotations) fillSpecificInfo(reader *util.BytesReader) {
+func (a *RuntimeInvisibleParameterAnnotations) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
 	a.NumParameters = reader.ReadUint16()
 	a.ParameterAnnotations = make([]ParameterAnnotation, a.NumParameters)
 	for i := range a.ParameterAnnotations {
