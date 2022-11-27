@@ -1,8 +1,8 @@
 package attributes
 
 import (
-	"jvm/src/class_file"
-	"jvm/src/class_file/constant_pool"
+	"jvm/src/class_file/acc"
+	"jvm/src/class_file/cp"
 )
 
 type MethodParameters struct {
@@ -12,6 +12,6 @@ type MethodParameters struct {
 }
 
 type Parameter struct {
-	NameIndex   constant_pool.Index
-	AccessFlags class_file.AccessFlags
+	NameIndex   cp.Index
+	AccessFlags acc.AccessFlags
 }

@@ -1,9 +1,9 @@
-package constant_pool
+package cp
 
 import "log"
 
 var logger = func() *log.Logger {
 	logger := log.Default()
-	logger.SetPrefix("[CP_Parser]")
+	logger.SetPrefix("[CP]")
 	return logger
 }()

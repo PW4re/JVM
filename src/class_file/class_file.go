@@ -1,21 +1,27 @@
 package class_file
 
-import "jvm/src/class_file/constant_pool"
+import (
+	"jvm/src/class_file/acc"
+	"jvm/src/class_file/attributes"
+	"jvm/src/class_file/cp"
+	"jvm/src/class_file/fields"
+	"jvm/src/class_file/methods"
+)
 
 const MAGIC = 0xCAFEBABE
 
 type ClassFile struct {
-	minorVersion, majorVersion uint16
-	cpCount                    uint16
-	constantPool               constant_pool.ConstantPool
-	accessFlags                AccessFlags
-	thisClass, superClass      uint16
-	interfacesCount            uint16
-	interfaces                 []uint16
-	fieldCount                 uint16
-	// TODO: fields here
-	methodsCount uint16
-	// TODO methods here
-	attributesCount uint16
-	// TODO: attributes here
+	MinorVersion, MajorVersion uint16
+	CpCount                    uint16
+	ConstantPool               cp.ConstantPool
+	AccessFlags                acc.AccessFlags
+	ThisClass, SuperClass      cp.Index
+	InterfacesCount            uint16
+	Interfaces                 []cp.Index
+	FieldCount                 uint16
+	Fields                     []fields.Info
+	MethodsCount               uint16
+	Methods                    []methods.Info
+	AttributesCount            uint16
+	Attributes                 []attributes.Attribute
 }

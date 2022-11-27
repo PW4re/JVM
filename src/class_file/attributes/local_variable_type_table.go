@@ -1,6 +1,9 @@
 package attributes
 
-import "jvm/src/class_file/constant_pool"
+import (
+	"jvm/src/class_file/cp"
+	"jvm/src/utils"
+)
 
 type LocalVariableTypeTable struct {
 	commonInfo
@@ -8,9 +11,24 @@ type LocalVariableTypeTable struct {
 	Table                        []LocalVariableTypeTableEntry
 }
 
+func (a *LocalVariableTypeTable) fillSpecificInfo(reader *utils.BytesReader, _ cp.ConstantPool) {
+	a.LocalVariableTypeTableLength = reader.ReadUint16()
+	a.Table = make([]LocalVariableTypeTableEntry, a.LocalVariableTypeTableLength)
+	for i := range a.Table {
+		a.Table[i] = LocalVariableTypeTableEntry{
+			StartPc:        reader.ReadUint16(),
+			Length:         reader.ReadUint16(),
+			NameIndex:      cp.Index(reader.ReadUint16()),
+			SignatureIndex: cp.Index(reader.ReadUint16()),
+			Index:          reader.ReadUint16(),
+		}
+	}
+}
+
 type LocalVariableTypeTableEntry struct {
 	StartPc, Length uint16
-	NameIndex       constant_pool.Index
-	SignatureIndex  constant_pool.Index
-	Index           uint16 // TODO: If the local variable at index is of type double or long, it occupies both index and index + 1.
+	NameIndex       cp.Index
+	SignatureIndex  cp.Index
+	// Index Note: If the local variable at index is of type double or long, it occupies both index and index + 1
+	Index uint16
 }
